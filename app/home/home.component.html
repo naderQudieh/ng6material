@@ -1,0 +1,21 @@
+<mat-toolbar>Welcome in Angular Material Sandbox app!</mat-toolbar>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Where to go?</mat-card-title>
+  </mat-card-header>
+  <button mat-button *ngFor="let menuItem of menuItems" (click)="navigate(menuItem.link)">
+    <mat-icon>{{ menuItem.icon }}</mat-icon>{{ menuItem.label }}
+  </button>
+
+  <button mat-button [matMenuTriggerFor]="menu">
+    <mat-icon>face</mat-icon>Blog
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item [routerLink]="['/blog/posts']">
+      <mat-icon>view_list</mat-icon> Posts</button>
+    <button mat-menu-item [routerLink]="['/blog/users']">
+      <mat-icon>supervised_user_circle</mat-icon> Users</button>
+    <button mat-menu-item [routerLink]="['/blog/todos']">
+      <mat-icon>playlist_add_check</mat-icon> ToDo's</button>
+  </mat-menu>
+</mat-card>

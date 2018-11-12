@@ -1,0 +1,85 @@
+<div *ngIf="!posts">
+  <mat-spinner color="warn"></mat-spinner>
+</div>
+
+<mat-accordion *ngFor="let post of posts">
+  <mat-expansion-panel #postPanel (opened)="postPanel.panelOpenState = true" (closed)="postPanel.panelOpenState = false" [style.background-color]="postPanel.panelOpenState ? '#c6cfff' : '#fff'">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <strong>
+          {{ post.title | uppercase }}
+        </strong>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-card>
+      <mat-card-header>
+        <img mat-card-avatar src="https://cdn.iconscout.com/public/images/icon/free/png-256/avatar-user-boy-389cd1eb1d503149-256x256.png"
+          alt="avatar photo">
+        <mat-card-title>By: Shiba Inu</mat-card-title>
+        <mat-card-subtitle>Date</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          {{ post.body }}
+        </p>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions>
+        <button mat-button (click)="toggleComments(post.id, postPanel)">
+          <mat-icon>comment</mat-icon>
+          {{ !postPanel.showComments ? 'Show comments' : 'Hide comments' }}</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <div *ngIf="postPanel.showComments" class="comments-container">
+
+      <div *ngIf="!postPanel.comments">
+        <mat-spinner color="warn"></mat-spinner>
+      </div>
+
+      <mat-card *ngIf="postPanel.comments">
+        <mat-card-content>
+          <form class="example-form">
+            <mat-form-field>
+              <input matInput type="text" placeholder="Name" [(ngModel)]="name" name="name">
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput type="email" placeholder="E-mail" [(ngModel)]="email" name="email">
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+              <textarea matInput placeholder="Leave a comment" [(ngModel)]="comment" name="newComment"></textarea>
+            </mat-form-field>
+          </form>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button (click)="leaveComment(post.id, postPanel.comments)">
+            <mat-icon [style.color]="'#3f51b5'">send</mat-icon>
+            Leave Comment
+          </button>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-card *ngFor="let comment of postPanel.comments" class="comment" #postComment>
+        <mat-card-header>
+          <img mat-card-avatar src="https://cdn.iconscout.com/public/images/icon/free/png-256/avatar-user-boy-389cd1eb1d503149-256x256.png"
+            alt="avatar photo">
+          <mat-card-title>{{ comment.name }}</mat-card-title>
+          <mat-card-subtitle>{{ comment.email }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            {{ comment.body }}
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button (click)="likeComment(postComment)">
+            <mat-icon [style.color]="postComment.liked ? '#3f51b5' : 'black'">thumb_up</mat-icon>
+            {{ postComment.liked ? 'DISLIKE' : 'LIKE' }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+  </mat-expansion-panel>
+</mat-accordion>

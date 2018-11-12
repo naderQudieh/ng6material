@@ -1,0 +1,23 @@
+.user-stat {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    label {
+        font-weight: bold;
+        margin: 10px;
+    }
+}
+
+.user-stat-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: center;
+    position:relative; 
+    top: -60px; 
+    font-size: 1.5em;
+}

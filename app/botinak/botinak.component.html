@@ -1,0 +1,20 @@
+<mat-card class="result">
+  <mat-card-content>
+    <h2 class="example-h2">Ne húzd el!</h2>
+
+    <section class="example-section">
+      <mat-slide-toggle class="example-margin" color="primary" (change)="toggle()">
+      </mat-slide-toggle>
+    </section>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="checked">
+  <mat-card-content>
+    <h2 class="example-h2">Túrj faart!</h2>
+
+    <section class="example-section">
+      <img src="https://media1.tenor.com/images/47c70a1f0979d707adeb1e34b6172686/tenor.gif?itemid=4335986" alt="" width="500">
+    </section>
+  </mat-card-content>
+</mat-card>

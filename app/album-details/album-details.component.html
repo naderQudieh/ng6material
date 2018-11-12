@@ -1,0 +1,14 @@
+<div *ngIf="!photos.length">
+  <mat-spinner color="warn"></mat-spinner>
+</div>
+
+<mat-grid-list cols="6">
+  <mat-grid-tile *ngFor="let photo of photos;" [colspan]="1" [rowspan]="1">
+    <mat-card (click)="openDialog(photo.id)">
+      <mat-card-header>
+        <mat-card-title>{{photo?.id}}</mat-card-title>
+      </mat-card-header>
+      <img mat-card-image [src]="photo?.thumbnailUrl" [alt]="photo?.title" matTooltip="Title: {{photo?.title}}">
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>

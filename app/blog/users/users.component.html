@@ -1,0 +1,16 @@
+<div *ngIf="!users">
+  <mat-spinner color="warn"></mat-spinner>
+</div>
+
+<mat-grid-list cols="4" rowHeight="110px">
+  <mat-grid-tile *ngFor="let user of users" colspan="1">
+
+    <app-user-card 
+      [avatarUrl]="'https://static.thenounproject.com/png/17241-200.png'"
+      [title]="user.name"
+      [subtitle]="user.email" 
+      (click)="openUser(user.id)">
+    </app-user-card>
+
+  </mat-grid-tile>
+</mat-grid-list>

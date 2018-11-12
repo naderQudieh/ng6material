@@ -1,0 +1,38 @@
+<h3 mat-subheader>Search GitHub users</h3>
+<mat-form-field class="example-form-field">
+  <input matInput type="text" placeholder="Enter github username" [(ngModel)]="username" (input)="searchUser(username)">
+  <button mat-button *ngIf="username" matSuffix mat-icon-button aria-label="Clear" (click)="username=''">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
+
+<button mat-fab color="primary" (click)="searchUser(username)">
+  <mat-icon>search</mat-icon>
+</button>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <h3>Search Results:</h3>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngIf="!filteredUsers">
+      <mat-spinner color="warn"></mat-spinner>
+    </div>
+
+    <mat-grid-list cols="4" rowHeight="110px">
+      <mat-grid-tile *ngFor="let user of filteredUsers" colspan="1">
+
+        <app-user-card 
+          [avatarUrl]="user.avatar_url"
+          [title]="user.login"
+          [subtitle]="user.type" 
+          (click)="openUser(user.login)">
+        </app-user-card>
+
+      </mat-grid-tile>
+    </mat-grid-list>
+
+  </mat-card-content>
+</mat-card>

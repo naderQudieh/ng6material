@@ -1,0 +1,10 @@
+mat-card:hover {
+    transform: scale(1.1);
+    background: #c6cfff;
+}
+
+mat-card {
+    cursor: pointer;
+    width: 250px;
+    transition: all .2s ease-in-out;
+}

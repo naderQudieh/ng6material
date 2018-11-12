@@ -1,0 +1,11 @@
+<div *ngIf="!todos">
+  <mat-spinner color="warn"></mat-spinner>
+</div>
+
+<mat-list *ngIf="todos">
+  <h3 mat-subheader>All ToDo's</h3>
+  <mat-list-item *ngFor="let todo of todos">
+    <mat-icon mat-list-icon [class.done]="todo.completed">{{ todo.completed ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+    <h4 mat-line [class.crossed]="todo.completed"> {{ todo.title }} </h4>
+  </mat-list-item>
+</mat-list>

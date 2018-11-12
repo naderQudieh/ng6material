@@ -1,0 +1,103 @@
+<mat-accordion>
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Personal data of {{ user?.login }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div *ngIf="user">
+      <mat-card>
+        <mat-card-header>
+          <img mat-card-avatar src="{{ user.avatar_url }}" alt="Photo of a Shiba Inu">
+          <mat-card-title>{{ user.name | uppercase }}</mat-card-title>
+          <mat-card-subtitle>{{ user.login | uppercase }}</mat-card-subtitle>
+        </mat-card-header>
+        <!-- <img mat-card-image > -->
+        <mat-card-content>
+          <p role="listitem">
+            <strong>Id: </strong> {{ user.id }}</p>
+          <div role="listitem">
+            <strong>Github page: </strong>
+            <a [href]="user.html_url" target="_blank">{{ user.html_url }}</a>
+          </div>
+          <div role="listitem">
+            <strong>Joined at: </strong>
+            {{ user.created_at | date }}
+          </div>
+          <div role="listitem">
+            <strong>Lives in: </strong>
+            {{ user.location }}
+          </div>
+
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>
+                <h3>
+                  <mat-icon>trending_up</mat-icon> User Stats:
+                </h3>
+              </mat-card-title>
+            </mat-card-header>
+            <mat-divider></mat-divider>
+            <div class="user-stat-container">
+              <div class="user-stat">
+                <label for="">Public Repos</label>
+                <div class="spinner">
+                  <mat-progress-spinner mode="determinate" [value]="user.public_repos">
+                  </mat-progress-spinner>
+                  <div class="progress-label">{{ user.public_repos }}</div>
+                </div>
+              </div>
+              <div class="user-stat">
+                <label for="">Public Gists</label>
+                <div class="spinner">
+                  <mat-progress-spinner mode="determinate" [value]="user.public_gists">
+                  </mat-progress-spinner>
+                  <div class="progress-label">{{ user.public_gists }}</div>
+                </div>
+              </div>
+              <div class="user-stat">
+                <label for="">Followers</label>
+                <div class="spinner">
+                  <mat-progress-spinner mode="determinate" [value]="user.followers">
+                  </mat-progress-spinner>
+                  <div class="progress-label">{{ user.followers }}</div>
+                </div>
+              </div>
+              <div class="user-stat">
+                <label for="">Following</label>
+                <div class="spinner">
+                  <mat-progress-spinner mode="determinate" [value]="user.following">
+                  </mat-progress-spinner>
+                  <div class="progress-label">{{ user.following }}</div>
+                </div>
+              </div>
+            </div>
+          </mat-card>
+
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-mini-fab color="primary" (click)="navigateBack()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <div *ngIf="!user">
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar>
+            <mat-spinner diameter="40"></mat-spinner>
+          </div>
+          <mat-card-title>Loading...</mat-card-title>
+          <mat-card-subtitle>Loading...</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </mat-expansion-panel>
+</mat-accordion>

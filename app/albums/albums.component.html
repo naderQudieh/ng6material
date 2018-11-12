@@ -1,0 +1,15 @@
+<div *ngIf="!albums">
+  <mat-spinner color="warn"></mat-spinner>
+</div>
+
+<mat-nav-list>
+  <h3 mat-subheader>Albums</h3>
+  <mat-list-item *ngFor="let album of albums">
+    <mat-icon mat-list-icon>folder</mat-icon>
+    <a matLine [routerLink]="['/album/' + album.id ]">
+      <h4 mat-line>{{album.title}}</h4>
+    </a>
+    <p mat-line> {{album.updated | date}} </p>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+</mat-nav-list>

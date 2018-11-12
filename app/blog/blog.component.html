@@ -1,0 +1,8 @@
+<nav mat-tab-nav-bar [backgroundColor]="background">
+    <a mat-tab-link *ngFor="let menuItem of menuItems"
+       (click)="activeLink = menuItem.label"
+       [active]="activeLink == menuItem.label"
+       [routerLink]="menuItem.link">
+       <mat-icon>{{ menuItem.icon }}</mat-icon> {{ menuItem.label }} </a>
+  </nav>
+  <router-outlet></router-outlet>

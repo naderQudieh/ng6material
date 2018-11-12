@@ -1,0 +1,27 @@
+.done {
+    color: green;
+}
+
+.crossed {
+    text-decoration: line-through;
+}
+
+.undone {
+    color: red;
+}
+
+.todos-container {
+    overflow-y: scroll;
+    border-left: 1px solid rgb(214, 214, 214);
+    border-right: 1px solid rgb(214, 214, 214);
+    border-bottom: 1px solid rgb(214, 214, 214);
+}
+
+.todo-list {
+    margin-top: 100%;
+    mat-list-item {
+        mat-icon, h4 {
+            cursor: pointer;
+        }
+    }
+}
