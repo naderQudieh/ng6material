@@ -1,0 +1,636 @@
+<template>
+
+    <b-container style=" vertical-align: top; ">
+        <b-row style="margin-top:25px; border-bottom:thin double #808080;">
+            <span class="header1" style="text-align:left">Assessment Details</span>
+            <span class="headerMenu">
+                <b-link to="/Dashboard">home</b-link>&nbsp/&nbsp <span>Assessment details</span>
+            </span>
+        </b-row>
+        <b-row style="margin-top:25px;text-align:left;">
+            <span style="text-align:left;margin-right:40px;">Request  ID : {{AssmntInfo.requistID}}</span>
+            <span style="text-align:left;margin-right:40px;">Request  Name: {{AssmntInfo.requestName}}</span>
+            <span style="text-align:left;margin-right:40px;">Submit date: {{ AssmntInfo.submitDate | moment }}</span>
+        </b-row>
+        <transition enterActiveClass="slideInLeft" leaveActiveClass="slideOutRight" appear>
+            <div class="popBox animated box" v-show="ShowDataCategoryScoring">
+                <img src="../assets/ShowDataCategoryScoring.png" />
+                <a href="#foo"
+                   v-on:click.prevent="falseAnchor($event)" class="closeWindow"
+                   @click="ShowDataCategoryScoring = false">
+                    X
+                </a>
+            </div>
+
+        </transition>
+
+        <transition enterActiveClass="slideInLeft" leaveActiveClass="slideOutRight" appear>
+
+
+            <div class="popBox animated box" v-show="ShowElementsScoring">
+
+                <img src="../assets/ShowElementsScoring.png" />
+                <a href="#foo" class="closeWindow" @click="ShowElementsScoring = false">
+                    X
+                </a>
+            </div>
+        </transition>
+        <b-row style="margin-top:10px;text-align:left;">
+            <table border="1" style="width:100%">
+                <thead>
+                    <tr style="text-align:center; background-color:#9b106f">
+                        <th colspan="6" style="color:white" class="name">Scoring Overview</th>
+                    </tr>
+                    <tr style="text-align:center;background-color:#bcb8b8">
+                        <th colspan="2" style="text-align:center;">Dataset Scoring Details</th>
+                        <th colspan="4" style="text-align:center;">Scoring Breakdown</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="vertical-align: top;text-align:left;" colspan="2">
+                            <table class="borderright" style="width:100%;vertical-align:top">
+                                <tr>
+                                    <td>Initial Dataset Sensitivity Score</td>
+                                    <td>{{scoreDetails.initialDatasetSensitivityScore}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Hyper-Sensitive Dataset  Multiplier</td>
+                                    <td>{{scoreDetails.hyperSensitiveDatasetMultiplier}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Final Dataset Score</td>
+                                    <td>{{scoreDetails.finalDatasetScore}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Dataset Classification</td>
+                                    <td>{{scoreDetails.datasetClassification}}</td>
+                                </tr>
+                                <tr>
+                                    <td>  Approved By</td>
+                                    <td>{{scoreDetails.approvedBy}}</td>
+                                </tr>
+                                <tr style=" color:white; background-color:#9b106f">
+                                    <td style="text-align:center" colspan="2"> Scoring Component Breakdown</td>
+
+                                </tr>
+                                <tr>
+
+                                    <td style=" padding-top:30px; max-width: 350px;  border:none" colspan="2">
+                                        <ChartPieCategoriesScore :AssessmentCategoryData.sync="AssmntInfo"
+                                                                 :height="200" />
+                                        <p style=" margin-top:30px;">
+                                            *Pie chart does not incorporate hyper-sensitive data multiplier
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style=" padding-left:0px; padding-right:0px;text-align:left; " colspan="4">
+                            <table style="    min-height: 600px; background-color:white;width:100%;padding:0px 0px">
+                                <tbody>
+                                    <tr style="background-color:lightgray">
+                                        <th style=" padding-left:5px; " class="name">Component</th>
+                                        <th class="name">Component Score</th>
+                                        <th class="name">Sub-Component</th>
+                                        <th class="name">Sub-Component Score</th>
+                                    </tr>
+                                    <template v-for="item in categoriesscoreItems">
+                                        <tr class="ltr" style="border-bottom:thin double #c5c3c3;">
+                                            <td style=" padding-left:5px; " class="ltd">{{item.categoryName}}</td>
+                                            <td class="ltd" style="text-align:center">{{item.score}}</td>
+
+                                            <td class="ltd" colspan="2">
+                                                <template v-for="itemsub in item.subCategories">
+                                                    <div style=" border-bottom:1px solid #d8d2d2;">
+                                                        <span style=" height:20px; word-wrap: break-word; display:inline-block; width:90%"> {{itemsub.categorySubName}} </span>
+                                                        <span style="height:20px;display:inline-block;width:10% "> {{itemsub.score}} </span>
+                                                        <br />
+                                                    </div>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="height:40px;padding:0px 0px">
+                            <div style=" padding:10px; line-height:40px;  color:white; background-color:#9b106f; display:inline-block;width:20%">
+                                Recommended Actions	:
+                            </div>
+                            <div style=" padding:10px; line-height:40px; display:inline-block;width:75%">
+                                Framework output highlighting key data level controls based on alignment with external (regulatory), and internal (policies) requirements.
+                            </div>
+
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="6" tyle="border: none;">
+                            <a href="#foo" @click="ShowDataCategoryScoring = true">
+                                <p style="line-height:30px; margin-top:20px;"><span style="text-decoration:underline;">Data Element Scoring Reference Table</span></p>
+                            </a>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </b-row>
+
+        <b-row style="margin-top:20px;">
+
+
+            <table border="1" cellpadding="0" style="padding:0px 0px; width:100% ;">
+                <thead>
+                    <tr style="text-align:center; background-color:#9b106f">
+                        <th colspan="8" style="color:white" class="name"> Data Element Scoring Breakdown</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style=" vertical-align: top;text-align:left;padding: 0px 0px; " colspan="4">
+                            <table style=" height:800px; width:100%">
+                                <tbody>
+                                    <tr style="height:30px;background-color:lightgray" class="ltr">
+                                        <th class="name">&nbsp; Component</th>
+                                        <th class="name">Score</th>
+                                        <th class="name">Sub-Component</th>
+                                        <th class="name">Score</th>
+                                    </tr>
+                                    <template v-if="(index <= 3)" v-for="(item, index)   in datasetscoreItems">
+                                        <tr>
+                                            <td class="ltd">{{item.categoryName}}</td>
+                                            <td class="ltd" style="text-align:center">{{item.score}}</td>
+                                            <td class="ltd" style="background-color:gainsboro" colspan="2">
+                                                <template v-for="(itemsub, index) in  item.subCategories">
+                                                    <span style="height:20px; word-wrap: break-word; display:inline-block; width:90%">
+                                                        {{itemsub.categorySubName}}
+                                                    </span>
+                                                    <span style="height:20px;display:inline-block; width:10%"> {{itemsub.score}} </span>
+                                                    <br />
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+
+                        </td>
+                        <td style="  vertical-align: top;text-align:left;padding: 0px 0px; " colspan="4">
+                            <table style=" height:800px; width:100%">
+                                <tbody>
+
+                                    <tr style="height:30px;background-color:lightgray" class="ltr">
+
+                                        <th class="name">&nbsp; Component</th>
+                                        <th class="name">Score</th>
+                                        <th class="name">Sub-Component</th>
+                                        <th class="name">Score</th>
+                                    </tr>
+                                    <template v-if="(index >3)" v-for="(item, index)   in datasetscoreItems">
+                                        <tr>
+                                            <td class="ltd">{{item.categoryName}}</td>
+                                            <td class="ltd" style="text-align:center">{{item.score}}</td>
+                                            <td class="ltd" style="background-color:gainsboro" colspan="2">
+                                                <template v-for="(itemsub, index) in  item.subCategories">
+                                                    <span style="height:20px; word-wrap: break-word; display:inline-block; width:90%">
+                                                        {{itemsub.categorySubName}}
+                                                    </span>
+                                                    <span style="height:20px;display:inline-block; width:10%"> {{itemsub.score}} </span>
+                                                    <br />
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </b-row>
+        <b-row style="margin-top:20px; ">
+            <b-col style="padding:0px 0px" cols="12">
+                <table border="1" style="width:100%">
+                    <tr style="color:white; text-align:center; background-color:#9b106f">
+                        <th width="70%">Data Element Scoring Breakdown</th>
+                        <th width="30%">Data Element Scoring Key Reference Table</th>
+                    </tr>
+                    <tr>
+                        <td style="padding-top:20px;padding-left:0px;">
+                            <ChartBarDataSetScore :AssessmentDataSetData.sync="AssmntInfo" />
+                        </td>
+                        <td style="    padding: 0px 0px;vertical-align:top">
+                            <table style="color:black;width:100%;height:300px;">
+                                <tr style="background-color:lightgray">
+                                    <th>Impact Level</th>
+                                    <th>Scoring Range</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        No Impact
+                                    </td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Low Impact
+
+                                    </td>
+                                    <td>1 - 7 </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Medium Impact
+
+                                    </td>
+                                    <td>8 - 14</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        High Impact
+                                    </td>
+                                    <td> > 14</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </b-col>
+
+
+        </b-row>
+        <br />  <br />  <br />  <br />
+
+    </b-container>
+
+</template>
+
+<script>
+    import Vue from "vue";
+    import Vuex from "vuex";
+    import { mapState, mapActions } from "vuex";
+    import { questionsService } from "../_services";
+    import { authHeader } from "../_helpers";
+    import moment from 'moment';
+    import VueChartJs from 'vue-chartjs';
+    import 'chartjs-plugin-datalabels';
+    const css = require('../assets/animate2.css').toString();
+    import Velocity from 'velocity-animate';
+
+    const options = {
+        responsive: true,
+        plugins: { 
+            datalabels: {
+                offset: 60,
+                anchor: 'start',
+                align: 'end',
+                borderRadius: 3,
+                padding: 1,
+                color: 'black',
+                font: {
+                    style: 'bold',
+                },
+                display(context) {
+                    const { chart } = context;
+                    const meta = chart.getDatasetMeta(context.datasetIndex);
+                    return !meta.hidden;
+                },
+            }
+        }, 
+        //showAllTooltips: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: false
+        },
+        tooltips: {
+            enabled: true
+        },
+    }
+    let GlobalAssmntInfo = {};
+    Vue.config.productionTip = false
+    Vue.component('ChartPieCategoriesScore', {
+        extends: VueChartJs.Pie,
+        props: ["AssessmentCategoryData"],
+        data() {
+            return {
+                CategoryData0:[],
+                SessionID: '' 
+            };
+        },
+        watch: {
+            AssessmentCategoryData(name) {
+                this.assmntInfo = this.AssessmentCategoryData
+            },
+
+        },
+
+        mounted() {
+            var data = []; 
+            var CategoryData = [];
+            var lable_categoryCode = [];
+            
+            var lable_categoryName = [];
+            this.SessionID = this.$route.params.sessionid;
+            this.assmntInfo = this.AssessmentCategoryData; 
+            questionsService.getAssessmentScoreCaregories(this.SessionID).then(
+                result => {
+                   // console.log(result.data);
+                    var data = result.data;
+                    for (let i of data) {
+                        lable_categoryCode.push(i.categoryCode); 
+                        lable_categoryName.push(i.categoryName);
+                        var myscore = parseInt(i.score, 10);
+                        CategoryData.push(myscore) 
+                    }
+                  
+                   // this.addPlugin(pluginConfig);
+                    this.renderChart({
+                        labels: lable_categoryName,
+                        datasets: [{
+                            data: CategoryData,
+                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#33CE56', '#11CEA6'],
+                            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#33CE56', '#11CEA6'],
+                        }]
+                    }, options); 
+                });
+
+
+
+        }
+    })
+
+    const Baroptions = {
+        responsive: true,
+        plugins: {
+            datalabels: {
+                offset: 60,
+                anchor: 'start',
+                align: 'end',
+                borderRadius: 3,
+                padding: 1,
+                color: 'black',
+                font: {
+                    style: 'bold',
+                },
+                display(context) {
+                    const { chart } = context;
+                    const meta = chart.getDatasetMeta(context.datasetIndex);
+                    return !meta.hidden;
+                },
+            }
+        },
+        //showAllTooltips: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: false
+        },
+        tooltips: {
+            enabled: true
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    autoSkip: false
+                }
+            }]
+        }
+    }
+    Vue.component('ChartBarDataSetScore', {
+        extends: VueChartJs.Bar,
+        props: ["AssessmentDataSetData"],
+        data() {
+            return {
+                SessionID: '',
+                assmntInfo: {},
+            };
+        },
+        created() {
+
+        }
+        ,
+        watch: {
+            AssessmentDataSetData(name) {
+                this.assmntInfo = this.AssessmentDataSetData
+            },
+
+        },
+        mounted() { 
+            var CategoryData = [];
+            var lable_categoryCode = [];
+            
+            var lable_categoryName = [];
+            this.SessionID = this.$route.params.sessionid;
+            this.assmntInfo = this.AssessmentDataSetData;
+            questionsService.getAssessmentScoreDataElements(this.SessionID).then(
+                result => {
+                   
+                    var data = result.data;
+                    for (let i of data) {
+                        lable_categoryName.push(i.categoryName);
+                        lable_categoryCode.push(i.categoryCode); 
+                        var myscore  = parseInt(i.score, 10);
+                        CategoryData.push(myscore);
+                    }
+                    console.log(CategoryData);
+                    this.renderChart({
+                        labels: lable_categoryName,
+                        datasets: [{
+                            data: CategoryData,
+                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#33CE56', '#11CEA6',
+                                '#b6ff00', '#0094ff', '#43aac5', '#b6ff00', '#ffd800'],
+                            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#33CE56', '#11CEA6',
+                                '#b6ff00', '#0094ff', '#43aac5', '#b6ff00', '#ffd800'],
+                        }]
+                    }, Baroptions)
+
+                });
+
+
+        }
+        ,
+        methods: {
+            ToDo() {
+
+
+            }
+        }
+
+    })
+
+    
+
+    export default {
+        data: () => ({
+            SessionID:'',
+            slide: false,
+            ShowDataCategoryScoring: false,
+            ShowElementsScoring: false,
+            scoreDetails: {},
+            categoriesscoreItems: [],
+            datasetscoreItems: [],
+            scorefields: {
+                name: { key: 'name', label: 'Component', sortable: false },
+                score: { key: 'score', label: 'Component Score' },
+            },
+
+            resizeCb: null,
+            AssmntInfo: {},
+        }), created() {
+            this.SessionID = this.$route.params.sessionid;
+            this.$store.commit("globalStore/setShowLoading", false, { root: true });
+            questionsService.getScoresDashboardData(this.SessionID).then(result => {
+                this.$store.commit("globalStore/setShowLoading", false, { root: true });
+                console.log(result.data);
+                this.scoreDetails = result.data.scoreDetails;
+                this.categoriesscoreItems = result.data.datacategories;
+                this.datasetscoreItems = result.data.datasetelements;
+            }).catch(err => {
+                this.$store.commit("globalStore/setShowLoading", false, { root: true });
+            });
+
+        },
+        mounted() {
+           
+            questionsService.getAssessmentDetails(this.SessionID).then(
+
+                result => {
+                   // console.log(result.data);
+                    this.AssmntInfo = result.data;
+                    this.GlobalAssmntInfo = result.data;
+                });
+
+        },
+        computed: {
+            textColor() {
+                return this.theme === 'dark' ? '#fff' : '#495060'
+            }
+        },
+        watch: {
+            AssmntInfo(name) {
+                this.AssmntInfo = name;
+                this.GlobalAssmntInfo = name;
+            },
+
+        },
+        methods: {
+            falseAnchor: function (e) {
+
+                e.preventDefault();
+                e.stopPropagation();
+            },
+              enter(el) {
+                Velocity(
+                    el,
+                    {
+                        opacity: [1, 0],
+                        translateX: ['0px', '100px']
+                    },
+                    {
+                        duration: 500,
+                        easing: 'ease-out'
+                    }
+                )
+            },
+            moment: function () {
+                return moment();
+            },
+            ASubmitDate(date) {
+                return moment(date).format('MMM DD, YYYY  h:mm:ss a');
+            },
+        },
+        filters: {
+            moment: function (date) {
+                return moment(date).format('MMM , DD YYYY');
+            }
+        },
+        beforeDestroy() {
+            if (this.resizeCb) {
+                window.removeEventListener('resize', this.resizeCb)
+                this.resizeCb = null
+            }
+            //const userId = '123'
+            //router.push({ name: 'user', params: { userId } }) // -> /user/123
+            //router.push({ path: `/user/${userId}` }) // -> /user/123
+            //// This will NOT work
+            //router.push({ path: '/user', params: { userId } }) // -> /user
+            //    // literal string path
+            //    router.push('home')
+
+            //    // object
+            //    router.push({ path: 'home' })
+
+            //    // named route
+            //    router.push({ name: 'user', params: { userId: '123' } })
+
+            //    // with query, resulting in /register?plan=private
+            //    router.push({ path: 'register', query: { plan: 'private' } })
+        }
+
+
+    }
+</script>
+
+
+<style>
+    .popBox {
+        top: 40px;
+        left: 10%;
+        border: solid thin #000;
+        background-color: #fff; 
+        z-index: 9999;
+        position: fixed;
+        
+    }
+    .closeWindow {
+        font-size: 30px;
+        line-height: 30px;
+        font-weight: bold;
+        position: absolute;
+        text-decoration:none;
+        top: 10px;
+        right: 10px;
+    }
+    .closeWindow:hover { 
+        text-decoration: none; 
+    }
+
+     
+    .groupheader {
+        width:100%;
+        background-color: lightgray !important;
+        font-size: large;
+        font-weight: bold;
+        height: 40px;
+        line-height: 40px;
+        padding-left: 20px;
+    }
+
+    table {
+        font-family: Arial !important;
+        font-size: 0.8rem !important;
+    }
+    .tablescoredetails {
+        height:300px;
+        width: 100%;
+    }
+    .tablescoredetails th,td {
+        border-bottom: thin double #c5c3c3; 
+        padding-left:50px;
+    }
+    td, th {
+        height: 40px;
+        padding: 0px 5px;
+    } 
+
+</style>
