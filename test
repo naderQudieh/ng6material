@@ -1,636 +1,602 @@
-<template>
+ <template>
+    <b-container>
+        <loading :active.sync="IsLoading" :can-cancel="false"></loading>
 
-    <b-container style=" vertical-align: top; ">
-        <b-row style="margin-top:25px; border-bottom:thin double #808080;">
-            <span class="header1" style="text-align:left">Assessment Details</span>
+        <b-container style="margin-top:25px; border-bottom:thin double #808080;">
+            <h4 class="header1" style="text-align:left">Welcome</h4>
+
             <span class="headerMenu">
-                <b-link to="/Dashboard">home</b-link>&nbsp/&nbsp <span>Assessment details</span>
+                <b-link to="/Dashboard">home</b-link>&nbsp/&nbsp<span>Assessment</span>
             </span>
-        </b-row>
-        <b-row style="margin-top:25px;text-align:left;">
-            <span style="text-align:left;margin-right:40px;">Request  ID : {{AssmntInfo.requistID}}</span>
-            <span style="text-align:left;margin-right:40px;">Request  Name: {{AssmntInfo.requestName}}</span>
-            <span style="text-align:left;margin-right:40px;">Submit date: {{ AssmntInfo.submitDate | moment }}</span>
-        </b-row>
-        <transition enterActiveClass="slideInLeft" leaveActiveClass="slideOutRight" appear>
-            <div class="popBox animated box" v-show="ShowDataCategoryScoring">
-                <img src="../assets/ShowDataCategoryScoring.png" />
-                <a href="#foo"
-                   v-on:click.prevent="falseAnchor($event)" class="closeWindow"
-                   @click="ShowDataCategoryScoring = false">
-                    X
-                </a>
-            </div>
-
-        </transition>
-
-        <transition enterActiveClass="slideInLeft" leaveActiveClass="slideOutRight" appear>
-
-
-            <div class="popBox animated box" v-show="ShowElementsScoring">
-
-                <img src="../assets/ShowElementsScoring.png" />
-                <a href="#foo" class="closeWindow" @click="ShowElementsScoring = false">
-                    X
-                </a>
-            </div>
-        </transition>
-        <b-row style="margin-top:10px;text-align:left;">
-            <table border="1" style="width:100%">
-                <thead>
-                    <tr style="text-align:center; background-color:#9b106f">
-                        <th colspan="6" style="color:white" class="name">Scoring Overview</th>
-                    </tr>
-                    <tr style="text-align:center;background-color:#bcb8b8">
-                        <th colspan="2" style="text-align:center;">Dataset Scoring Details</th>
-                        <th colspan="4" style="text-align:center;">Scoring Breakdown</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="vertical-align: top;text-align:left;" colspan="2">
-                            <table class="borderright" style="width:100%;vertical-align:top">
-                                <tr>
-                                    <td>Initial Dataset Sensitivity Score</td>
-                                    <td>{{scoreDetails.initialDatasetSensitivityScore}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Hyper-Sensitive Dataset  Multiplier</td>
-                                    <td>{{scoreDetails.hyperSensitiveDatasetMultiplier}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Final Dataset Score</td>
-                                    <td>{{scoreDetails.finalDatasetScore}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Dataset Classification</td>
-                                    <td>{{scoreDetails.datasetClassification}}</td>
-                                </tr>
-                                <tr>
-                                    <td>  Approved By</td>
-                                    <td>{{scoreDetails.approvedBy}}</td>
-                                </tr>
-                                <tr style=" color:white; background-color:#9b106f">
-                                    <td style="text-align:center" colspan="2"> Scoring Component Breakdown</td>
-
-                                </tr>
-                                <tr>
-
-                                    <td style=" padding-top:30px; max-width: 350px;  border:none" colspan="2">
-                                        <ChartPieCategoriesScore :AssessmentCategoryData.sync="AssmntInfo"
-                                                                 :height="200" />
-                                        <p style=" margin-top:30px;">
-                                            *Pie chart does not incorporate hyper-sensitive data multiplier
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                        <td style=" padding-left:0px; padding-right:0px;text-align:left; " colspan="4">
-                            <table style="    min-height: 600px; background-color:white;width:100%;padding:0px 0px">
-                                <tbody>
-                                    <tr style="background-color:lightgray">
-                                        <th style=" padding-left:5px; " class="name">Component</th>
-                                        <th class="name">Component Score</th>
-                                        <th class="name">Sub-Component</th>
-                                        <th class="name">Sub-Component Score</th>
-                                    </tr>
-                                    <template v-for="item in categoriesscoreItems">
-                                        <tr class="ltr" style="border-bottom:thin double #c5c3c3;">
-                                            <td style=" padding-left:5px; " class="ltd">{{item.categoryName}}</td>
-                                            <td class="ltd" style="text-align:center">{{item.score}}</td>
-
-                                            <td class="ltd" colspan="2">
-                                                <template v-for="itemsub in item.subCategories">
-                                                    <div style=" border-bottom:1px solid #d8d2d2;">
-                                                        <span style=" height:20px; word-wrap: break-word; display:inline-block; width:90%"> {{itemsub.categorySubName}} </span>
-                                                        <span style="height:20px;display:inline-block;width:10% "> {{itemsub.score}} </span>
-                                                        <br />
-                                                    </div>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="6" style="height:40px;padding:0px 0px">
-                            <div style=" padding:10px; line-height:40px;  color:white; background-color:#9b106f; display:inline-block;width:20%">
-                                Recommended Actions	:
-                            </div>
-                            <div style=" padding:10px; line-height:40px; display:inline-block;width:75%">
-                                Framework output highlighting key data level controls based on alignment with external (regulatory), and internal (policies) requirements.
-                            </div>
-
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td colspan="6" tyle="border: none;">
-                            <a href="#foo" @click="ShowDataCategoryScoring = true">
-                                <p style="line-height:30px; margin-top:20px;"><span style="text-decoration:underline;">Data Element Scoring Reference Table</span></p>
-                            </a>
-                        </td>
-
-                    </tr>
-                </tbody>
-            </table>
-        </b-row>
-
-        <b-row style="margin-top:20px;">
-
-
-            <table border="1" cellpadding="0" style="padding:0px 0px; width:100% ;">
-                <thead>
-                    <tr style="text-align:center; background-color:#9b106f">
-                        <th colspan="8" style="color:white" class="name"> Data Element Scoring Breakdown</th>
-                    </tr>
-
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style=" vertical-align: top;text-align:left;padding: 0px 0px; " colspan="4">
-                            <table style=" height:800px; width:100%">
-                                <tbody>
-                                    <tr style="height:30px;background-color:lightgray" class="ltr">
-                                        <th class="name">&nbsp; Component</th>
-                                        <th class="name">Score</th>
-                                        <th class="name">Sub-Component</th>
-                                        <th class="name">Score</th>
-                                    </tr>
-                                    <template v-if="(index <= 3)" v-for="(item, index)   in datasetscoreItems">
-                                        <tr>
-                                            <td class="ltd">{{item.categoryName}}</td>
-                                            <td class="ltd" style="text-align:center">{{item.score}}</td>
-                                            <td class="ltd" style="background-color:gainsboro" colspan="2">
-                                                <template v-for="(itemsub, index) in  item.subCategories">
-                                                    <span style="height:20px; word-wrap: break-word; display:inline-block; width:90%">
-                                                        {{itemsub.categorySubName}}
-                                                    </span>
-                                                    <span style="height:20px;display:inline-block; width:10%"> {{itemsub.score}} </span>
-                                                    <br />
-                                                </template>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>
-
-                        </td>
-                        <td style="  vertical-align: top;text-align:left;padding: 0px 0px; " colspan="4">
-                            <table style=" height:800px; width:100%">
-                                <tbody>
-
-                                    <tr style="height:30px;background-color:lightgray" class="ltr">
-
-                                        <th class="name">&nbsp; Component</th>
-                                        <th class="name">Score</th>
-                                        <th class="name">Sub-Component</th>
-                                        <th class="name">Score</th>
-                                    </tr>
-                                    <template v-if="(index >3)" v-for="(item, index)   in datasetscoreItems">
-                                        <tr>
-                                            <td class="ltd">{{item.categoryName}}</td>
-                                            <td class="ltd" style="text-align:center">{{item.score}}</td>
-                                            <td class="ltd" style="background-color:gainsboro" colspan="2">
-                                                <template v-for="(itemsub, index) in  item.subCategories">
-                                                    <span style="height:20px; word-wrap: break-word; display:inline-block; width:90%">
-                                                        {{itemsub.categorySubName}}
-                                                    </span>
-                                                    <span style="height:20px;display:inline-block; width:10%"> {{itemsub.score}} </span>
-                                                    <br />
-                                                </template>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>
-
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </b-row>
-        <b-row style="margin-top:20px; ">
-            <b-col style="padding:0px 0px" cols="12">
-                <table border="1" style="width:100%">
-                    <tr style="color:white; text-align:center; background-color:#9b106f">
-                        <th width="70%">Data Element Scoring Breakdown</th>
-                        <th width="30%">Data Element Scoring Key Reference Table</th>
-                    </tr>
-                    <tr>
-                        <td style="padding-top:20px;padding-left:0px;">
-                            <ChartBarDataSetScore :AssessmentDataSetData.sync="AssmntInfo" />
-                        </td>
-                        <td style="    padding: 0px 0px;vertical-align:top">
-                            <table style="color:black;width:100%;height:300px;">
-                                <tr style="background-color:lightgray">
-                                    <th>Impact Level</th>
-                                    <th>Scoring Range</th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        No Impact
-                                    </td>
-                                    <td>0</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Low Impact
-
-                                    </td>
-                                    <td>1 - 7 </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Medium Impact
-
-                                    </td>
-                                    <td>8 - 14</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        High Impact
-                                    </td>
-                                    <td> > 14</td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-
-                </table>
+        </b-container>
+        <b-row style="height:30px;margin-top:10px" class="text-center">
+             <b-col cols="3">
+             </b-col>
+            <b-col cols="2">
+                <span style="font-weight:600;font-size:medium">
+                    STEP {{stepsValue}} of {{stepsMax}}
+                </span>
             </b-col>
-
-
+            <b-col>
+                <b-progress striped height="15px" show-value :value="stepsValue" variant="success" :max="stepsMax"></b-progress>
+            </b-col>
         </b-row>
-        <br />  <br />  <br />  <br />
+        <b-row>
+            <b-col md="3" style="margin-top:15px;text-align:left">
+                <NavBar :groupsCounts="groupsCounts" :currentGroup="selectedGroupIdx" @onSelectGroup="SelectGroup"></NavBar>
+            </b-col>
+            <b-col md="8" style=" margin-left:20px; margin-top:20px;text-align:left">
 
-    </b-container>
 
+                <b-alert variant="danger"
+                         dismissible
+                         :show="(ErrorMsg !== null)&&(ErrorMsg.length >1)"
+                         @dismissed="clearLoginError">
+                    <h6 v-if="ErrorMsg">Answer Required</h6>
+                </b-alert>
+                <transition name="fade">
+                    <b-form v-if="show" @submit.prevent="handleSubmit">
+                        <div style=" text-align: left; max-width:600px"
+                             v-for="(MainQuestion, index) in currentGroupQuestions">
+                            <div style="min-height:180px;" class="quiz-question" v-if="(index==(currentIndex))">
+                                
+                                <p class="sans-serif-font question-text">Q {{MainQuestion.rowID}}&nbsp - &nbsp{{MainQuestion.text}}  </p>
+                                <b-form @submit.prevent="handleSubmit">
+
+                                    <div class="quiz-options" v-if="(MainQuestion.type=='single')">
+                                        <b-form-group>
+                                            <b-form-radio-group horizontal
+                                                                :name="'grp'+MainQuestion.questionID+'V'"
+                                                                v-model="MainQuestion.checkedNames[0]"
+                                                                :options="MainQuestion.options"
+                                                                @change="onRdioboxChange(MainQuestion, $event)">
+                                            </b-form-radio-group>
+                                        </b-form-group>
+                                    </div>
+                                    
+                                    <div v-if="(MainQuestion.type=='multi')">
+                                        <b-form-group v-if="(MainQuestion.rowID!=5) &&(MainQuestion.rowID!=12) ">
+                                            <div v-if="(ops.isUIVisible)" style="min-width:300px; display:inline-block;padding:5px;"
+                                                 v-for="(ops, index) in MainQuestion.options">
+                                                <b-checkbox v-model="ops.isSelected"
+                                                            @change="onCheckboxChange(MainQuestion,ops.value)"
+                                                            name="ops.value" v-if="(ops.isUIVisible)">
+                                                    {{ops.text}}
+                                                </b-checkbox>
+                                            </div>
+                                         
+                                        </b-form-group>
+
+                                        <b-form-group v-if="(MainQuestion.rowID==5)||(MainQuestion.rowID==12) ">
+                                            <div v-for="(dset, index) in LinkedToQuestions">
+                                                <span style=" padding:5px 13px; background-color:#e0e0e0; display:block">{{dset.text}} </span>
+                                               
+                                                <div v-if="(dset.value==ops.linkedValueCode)&&(ops.isUIVisible)" style="min-width:300px; display:inline-block;padding:5px;"
+                                                     v-for="(ops, index) in MainQuestion.options">
+                                                     
+                                                    <b-checkbox v-model="ops.isSelected"
+                                                                @change="onCheckboxChange(MainQuestion,ops.value)"
+                                                                name="ops.value" v-if="(ops.isUIVisible)">
+                                                        {{ops.text}}
+                                                    </b-checkbox>
+                                                </div>
+                                            </div>
+
+
+                                        </b-form-group>
+                                    </div>
+                                </b-form>
+                            </div>
+                        </div>
+                        <div style=" width:100%;    text-align: left; margin:40px 2px;">
+                            <b-button style=" margin-right:30px;width:190px!important" type="submit" variant="primary">
+                                <span>Save and Continue</span>
+                            </b-button>
+                            <b-button style=" margin-right:30px;width:150px!important" @click="GoSaveExit" type="button" variant="primary">
+                                <span>Save and Exit</span>
+                            </b-button>
+                            <b-button style="margin-left:20px;" @click="GoQuestionBack" variant="secondary">Previous</b-button>
+
+                        </div>
+                    </b-form>
+                </transition>
+            </b-col>
+        </b-row>
+    </b-container> 
 </template>
-
 <script>
+    import GroupsNav from "../components/GroupsNav.vue";
+    import { questionsService } from "../_services";
     import Vue from "vue";
     import Vuex from "vuex";
     import { mapState, mapActions } from "vuex";
-    import { questionsService } from "../_services";
-    import { authHeader } from "../_helpers";
     import moment from 'moment';
-    import VueChartJs from 'vue-chartjs';
-    import 'chartjs-plugin-datalabels';
-    const css = require('../assets/animate2.css').toString();
-    import Velocity from 'velocity-animate';
-
-    const options = {
-        responsive: true,
-        plugins: { 
-            datalabels: {
-                offset: 60,
-                anchor: 'start',
-                align: 'end',
-                borderRadius: 3,
-                padding: 1,
-                color: 'black',
-                font: {
-                    style: 'bold',
-                },
-                display(context) {
-                    const { chart } = context;
-                    const meta = chart.getDatasetMeta(context.datasetIndex);
-                    return !meta.hidden;
-                },
-            }
-        }, 
-        //showAllTooltips: true,
-        maintainAspectRatio: false,
-        legend: {
-            display: false
-        },
-        tooltips: {
-            enabled: true
-        },
-    }
-    let GlobalAssmntInfo = {};
-    Vue.config.productionTip = false
-    Vue.component('ChartPieCategoriesScore', {
-        extends: VueChartJs.Pie,
-        props: ["AssessmentCategoryData"],
-        data() {
-            return {
-                CategoryData0:[],
-                SessionID: '' 
-            };
-        },
-        watch: {
-            AssessmentCategoryData(name) {
-                this.assmntInfo = this.AssessmentCategoryData
-            },
-
-        },
-
-        mounted() {
-            var data = []; 
-            var CategoryData = [];
-            var lable_categoryCode = [];
-            
-            var lable_categoryName = [];
-            this.SessionID = this.$route.params.sessionid;
-            this.assmntInfo = this.AssessmentCategoryData; 
-            questionsService.getAssessmentScoreCaregories(this.SessionID).then(
-                result => {
-                   // console.log(result.data);
-                    var data = result.data;
-                    for (let i of data) {
-                        lable_categoryCode.push(i.categoryCode); 
-                        lable_categoryName.push(i.categoryName);
-                        var myscore = parseInt(i.score, 10);
-                        CategoryData.push(myscore) 
-                    }
-                  
-                   // this.addPlugin(pluginConfig);
-                    this.renderChart({
-                        labels: lable_categoryName,
-                        datasets: [{
-                            data: CategoryData,
-                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#33CE56', '#11CEA6'],
-                            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#33CE56', '#11CEA6'],
-                        }]
-                    }, options); 
-                });
-
-
-
-        }
-    })
-
-    const Baroptions = {
-        responsive: true,
-        plugins: {
-            datalabels: {
-                offset: 60,
-                anchor: 'start',
-                align: 'end',
-                borderRadius: 3,
-                padding: 1,
-                color: 'black',
-                font: {
-                    style: 'bold',
-                },
-                display(context) {
-                    const { chart } = context;
-                    const meta = chart.getDatasetMeta(context.datasetIndex);
-                    return !meta.hidden;
-                },
-            }
-        },
-        //showAllTooltips: true,
-        maintainAspectRatio: false,
-        legend: {
-            display: false
-        },
-        tooltips: {
-            enabled: true
-        },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }],
-            xAxes: [{
-                ticks: {
-                    autoSkip: false
-                }
-            }]
-        }
-    }
-    Vue.component('ChartBarDataSetScore', {
-        extends: VueChartJs.Bar,
-        props: ["AssessmentDataSetData"],
-        data() {
-            return {
-                SessionID: '',
-                assmntInfo: {},
-            };
-        },
-        created() {
-
-        }
-        ,
-        watch: {
-            AssessmentDataSetData(name) {
-                this.assmntInfo = this.AssessmentDataSetData
-            },
-
-        },
-        mounted() { 
-            var CategoryData = [];
-            var lable_categoryCode = [];
-            
-            var lable_categoryName = [];
-            this.SessionID = this.$route.params.sessionid;
-            this.assmntInfo = this.AssessmentDataSetData;
-            questionsService.getAssessmentScoreDataElements(this.SessionID).then(
-                result => {
-                   
-                    var data = result.data;
-                    for (let i of data) {
-                        lable_categoryName.push(i.categoryName);
-                        lable_categoryCode.push(i.categoryCode); 
-                        var myscore  = parseInt(i.score, 10);
-                        CategoryData.push(myscore);
-                    }
-                    console.log(CategoryData);
-                    this.renderChart({
-                        labels: lable_categoryName,
-                        datasets: [{
-                            data: CategoryData,
-                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#33CE56', '#11CEA6',
-                                '#b6ff00', '#0094ff', '#43aac5', '#b6ff00', '#ffd800'],
-                            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#33CE56', '#11CEA6',
-                                '#b6ff00', '#0094ff', '#43aac5', '#b6ff00', '#ffd800'],
-                        }]
-                    }, Baroptions)
-
-                });
-
-
-        }
-        ,
-        methods: {
-            ToDo() {
-
-
-            }
-        }
-
-    })
-
+    import vue_multiselect from '../components/dropdowns.vue'
+    import Loading from 'vue-loading-overlay';
     
 
-    export default {
-        data: () => ({
-            SessionID:'',
-            slide: false,
-            ShowDataCategoryScoring: false,
-            ShowElementsScoring: false,
-            scoreDetails: {},
-            categoriesscoreItems: [],
-            datasetscoreItems: [],
-            scorefields: {
-                name: { key: 'name', label: 'Component', sortable: false },
-                score: { key: 'score', label: 'Component Score' },
-            },
-
-            resizeCb: null,
-            AssmntInfo: {},
-        }), created() {
-            this.SessionID = this.$route.params.sessionid;
-            this.$store.commit("globalStore/setShowLoading", false, { root: true });
-            questionsService.getScoresDashboardData(this.SessionID).then(result => {
-                this.$store.commit("globalStore/setShowLoading", false, { root: true });
-                console.log(result.data);
-                this.scoreDetails = result.data.scoreDetails;
-                this.categoriesscoreItems = result.data.datacategories;
-                this.datasetscoreItems = result.data.datasetelements;
-            }).catch(err => {
-                this.$store.commit("globalStore/setShowLoading", false, { root: true });
-            });
-
+    export default Vue.extend({
+        components: {
+            NavBar: GroupsNav, vue_multiselect, Loading 
         },
-        mounted() {
-           
-            questionsService.getAssessmentDetails(this.SessionID).then(
-
-                result => {
-                   // console.log(result.data);
-                    this.AssmntInfo = result.data;
-                    this.GlobalAssmntInfo = result.data;
-                });
-
+        data() {
+            return { 
+                testtext:'',
+                currentIndex: -1,
+                questions: [],
+                QuestionsCount: 0, 
+                currentGroupQuestions: [],
+                groupsCounts: [],
+                selectedGroupIdx: 1,
+                currentGroupQuestionsCount: 0, 
+                GroupsList: [],
+                linkedQuestions: [],
+                show: true,
+                SessionID: '',
+                CurrentQuestion: null,
+                STOPAPP: false,
+                ErrorMsg: '',
+                stepsMax:6 ,
+                asstStatus: {},
+                isToContinue: false,
+                IsToSkipQ: false,
+                completedGroups: [],
+                IsLoading: false,
+                storagefilename: '',
+                LinkedToQuestions: [] 
+                
+            };
         },
         computed: {
-            textColor() {
-                return this.theme === 'dark' ? '#fff' : '#495060'
-            }
+           
+            stepsValue: function () {
+                return this.selectedGroupIdx;
+                //if (this.selectedGroupIdx > 0) {
+                //    return this.selectedGroupIdx + 1;
+                //}
+               
+            },
         },
         watch: {
-            AssmntInfo(name) {
-                this.AssmntInfo = name;
-                this.GlobalAssmntInfo = name;
-            },
+            currentIndex: function (newValue, oldValue) {
+               //// console.log(newValue, oldValue);
+              //  console.log(this.currentGroupQuestions[this.currentIndex]);
+            }
+        },
+        created() {
+            
+           
+            this.SessionID = this.$route.params.sessionid;
+            this.storagefilename = "completedGroups" + this.SessionID
+             var _sessionid = this.SessionID;
+             var _sessionInfo = localStorage.getItem(_sessionid);
+            //if (_sessionInfo === null) {
+            //    localStorage.setItem(_sessionid, JSON.stringify(_sessionInfo));
+            //} else {
+            //    Object.assign(this.sessionInfo, this.sessionInfo, _sessionInfo);
+            //}
+               
+            questionsService.getSessionStatus(this.SessionID).then(response => {
+                //console.log(response.data);
+                Object.assign(this.asstStatus, this.asstStatus, response.data); 
+                if (this.asstStatus['isCompleted'] == true) {
+                    this.$router.push('/assessment/' + this.SessionID + '/submitted');
+                    return;
+                }
+                if (this.asstStatus['workfllowStatus'] == 'continue') {
+                    this.isToContinue = true;
+                } 
+            });
+            //let loader = Vue.$loading.show({
+            //    width: 114,
+            //    height:114,
+            //    loader: 'spinner',
+            //    backgroundColor: 'rgba(228, 240, 213, 0.73)',
+            //    color: '#b13977'
+            //});
+            this.IsLoading = true;
+            questionsService.getQuestions(_sessionid).then(data => { 
+                this.IsLoading = false;
+                this.questions = data.questions
+                this.GroupsList = data.questionGroups;
+                this.linkedQuestions = data.linkedQuestions; 
+                this.QuestionsCount = this.questions.length;
+                this.groupsCounts = [];
+                this.GroupsList.forEach(element => { 
+                    this.groupsCounts.push(element.rowsCount);
+                });
+              
 
+                var lcompletedGroups = JSON.parse(localStorage.getItem(this.storagefilename) || '[]');
+                console.log(lcompletedGroups);
+                var largest = Math.max.apply(Math, lcompletedGroups);
+                if (largest > 0) {
+                    this.SelectGroup(largest+1); 
+                    return false;
+                } else {
+                    this.currentIndex = 0; 
+                    this.SelectGroup(1);  
+                } 
+                let currentQ = this.currentGroupQuestions[this.currentIndex]; 
+               
+            }).catch(err => {
+                this.IsLoading = false; 
+                this.ErrorMsg = err.toString() + '. Please contact your system administrator'; 
+                this.STOPAPP = true;
+            });
         },
         methods: {
-            falseAnchor: function (e) {
-
-                e.preventDefault();
-                e.stopPropagation();
+          
+            onRdioboxChange(mquestion) {
+                event.preventDefault; 
+                mquestion.options.forEach(element => {
+                    if (element.value != event.target.value) {
+                        element.isSelected = false;
+                    } else {
+                        element.isSelected = true;
+                    }
+                }); 
+                console.log(mquestion);
             },
-              enter(el) {
-                Velocity(
-                    el,
-                    {
-                        opacity: [1, 0],
-                        translateX: ['0px', '100px']
+            onCheckboxChange(mquestion, value) {
+                
+                let isChecked = event.target.checked;
+                
+                if (isChecked) {
+                    if (value == 'NA') {
+                        mquestion.options.forEach(element => {
+                            if (element.value != 'NA') {
+                                element.isSelected = false;
+                            }
+                        });
+                    } else {
+                        mquestion.options.forEach(element => {
+                            if (element.value == 'NA') {
+                                element.isSelected = false;
+                            }
+                            else if (element.value == value) {
+                                element.isSelected = true;
+                            }
+                        });
+                    }
+                } else {
+                    mquestion.options.forEach(element => { 
+                        if (element.value == value) {
+                            element.isSelected = false;
+                        }
+                    });
+                }
+                let selOptions = mquestion.options.filter(function (el) {
+                    return el.isSelected == true;
+                });
+                
+                mquestion.checkedNames = [];
+                selOptions.forEach(element => { 
+                        mquestion.checkedNames.push(element.value);  
+                }); 
+               
+                if (value == 'NA') {
+                    if (isChecked == true) { 
+                        mquestion.checkedNames = ['NA']; 
+                        }  
+                }
+                
+                console.log(mquestion); 
+            }, 
+            onMultiSelectChanged(item, isAdded) {
+               // console.log(item); 
+                let currentquestion = this.currentGroupQuestions[this.currentIndex];
+                
+                if (isAdded) {
+                    currentquestion.options.forEach(element => {
+                        if (item.value == 'NA') {
+                            if (element.value !== 'NA') {
+                                element.isSelected = false;
+                            } else {
+                                element.isSelected = true;
+                            }
+                        }
+                        else
+                        {
+                            if (element.value  == 'NA') {
+                                element.isSelected = false;
+                            } else {
+                                if (item.value == element.value) {
+                                    element.isSelected = true;
+                                }
+                            }
+                        }
+                    }); 
+                    currentquestion.checkedNames.push(item.value); 
+                }
+                else
+                {
+                    currentquestion.isSelected = false;
+                    var index = currentquestion.checkedNames.indexOf(item.value);
+                    if (index != -1) {
+                        currentquestion.checkedNames.splice(index, 1);
+                    }
+
+                    currentquestion.options.forEach(element => { 
+                        if (item.value == element.value) {
+                            element.isSelected = false;
+                        }  
+                    }); 
+                } 
+            },
+          
+            handleSubmit(evt) {
+                evt.preventDefault
+                this.ErrorMsg = '';
+                let currentquestion = this.currentGroupQuestions[this.currentIndex];
+                let isAnswered = false;
+                if (currentquestion.required == true) { 
+                    currentquestion.options.forEach(element => {
+                        if (element.isSelected  ) {
+                            isAnswered = true; 
+                        }
+                    }); 
+
+                   
+                }
+                if (isAnswered == false) {
+                        this.ErrorMsg = 'Answer Required';
+                        return false;
+                    }
+                this.LinkedToQuestions = [];
+                let CheckedAnswers = [];
+                currentquestion.options.forEach(element => {
+                    if (element.isSelected==true) { 
+                        var index = CheckedAnswers.indexOf(element.value);
+                        if (index == -1) { 
+                            CheckedAnswers.push(element.value);
+                        }
+                        if (currentquestion.rowID == 4 || currentquestion.rowID == 11) {
+                           
+                            this.LinkedToQuestions.push({ text: element.text, value: element.value});
+                        }
+                        
+                    }
+                });
+                
+                let Answers = {
+                    SessionID: this.SessionID,
+                    QuestionID: currentquestion.questionID,
+                    CheckedNames: CheckedAnswers,
+                    RowID: currentquestion.rowID
+                }
+                console.log(Answers);
+                
+                this.SubmitAnswer(Answers); 
+            },
+            SubmitAnswer(params) {
+                this.$store.commit("globalStore/setShowLoading", true, { root: true }); 
+                questionsService.SubmitAnswer(params).then(
+                    result => {
+                        this.$store.commit("globalStore/setShowLoading", false, { root: true });
+                        this.GoQuestionNext();
                     },
-                    {
-                        duration: 500,
-                        easing: 'ease-out'
+                    error => {
+                        this.$store.commit("globalStore/setShowLoading", false, { root: true });
+                       // console.log('SubmitAnswerFailure 11');
                     }
                 )
             },
-            moment: function () {
-                return moment();
+            CheckLinkedQuestion() {
+                if ( this.currentIndex < this.groupsCounts[this.selectedGroupIdx - 1] - 1) {
+                    let questionNext = this.currentGroupQuestions[this.currentIndex + 1];
+                    let linked_ID = questionNext.linkedQuestionRef; 
+                    
+                    if ((linked_ID != null) && (linked_ID != undefined)) {
+                        let parentQuestions = this.currentGroupQuestions.filter(function (el) {
+                           return el.questionID == linked_ID;
+                            // && el.sqft >= 500
+                        });
+                       
+                        if (parentQuestions.length > 0) { 
+                            questionNext.isUIVisible = false;
+                            let parentQuestion = parentQuestions[0]; 
+                            let pCheckedNames = parentQuestion.checkedNames;
+                            console.log(pCheckedNames);
+                            let lnkedOptions = questionNext.linkedQuestionOption;  
+                           
+                            let nextOptions = questionNext.options;
+                            let selOptions = nextOptions.filter(function (el) {
+                                return el.isSelected == true; 
+                            }); 
+                            selOptions.forEach(ops => {
+                                if (pCheckedNames.indexOf(ops.linkedValueCode) === -1) {
+                                    ops.isSelected = false;
+                                } 
+                            }); 
+                            pCheckedNames.forEach(chkname => {
+                                nextOptions.forEach(ops => {
+                                    if (ops.linkedValueCode == chkname) {
+                                        ops.isUIVisible = true;
+                                    } 
+                                    let foundoptions = selOptions.filter(function (el) {
+                                        return el.linkedValueCode == chkname; 
+                                    });
+                                    if (foundoptions.length > 0) {
+                                        foundoptions.forEach(el => {
+                                            el.isSelected == false; 
+                                        }); 
+                                    }
+                                });
+                            });
+                            let selOptions1 = nextOptions.filter(function (el) {
+                                return el.isSelected == true;
+                            });
+                           
+                            if (pCheckedNames) { 
+                                this.IsToSkipQ = true;
+                                switch (lnkedOptions) {
+                                    case "ANY":
+                                        if (pCheckedNames.length > 0) {
+                                            questionNext.isUIVisible = true;
+                                            this.IsToSkipQ = false;
+                                            let nextOptions = questionNext.options; 
+                                            pCheckedNames.forEach(chkname => {
+                                                nextOptions.forEach(ops => {
+                                                    if (ops.linkedValueCode == chkname) {
+                                                        ops.isUIVisible = true;
+                                                    }
+                                                    
+                                                });
+                                            });
+                                        }
+                                        break;
+                                    case "YES":
+                                        if (pCheckedNames.length > 0) {
+                                            if (pCheckedNames[0] == "YES" || pCheckedNames == 'Yes' || pCheckedNames == 2) {
+                                                this.IsToSkipQ = false;
+                                                questionNext.isUIVisible = true;
+
+                                            }  
+                                        }
+                                        break;
+                                    case "NO":
+                                        if (pCheckedNames.length > 0) {
+                                            if (pCheckedNames[0] == "NO" || pCheckedNames[0] == "No" || pCheckedNames == 1) {
+                                                this.IsToSkipQ = false;
+                                                questionNext.isUIVisible = true;
+                                               
+                                            } 
+                                        }
+                                        break;
+                                    default:
+                                        this.IsToSkipQ = true;
+                                        questionNext.isUIVisible = false;
+
+                                }
+                                
+                            }
+                            
+                        }  
+                          
+                    }
+                }
+
             },
-            ASubmitDate(date) {
-                return moment(date).format('MMM DD, YYYY  h:mm:ss a');
+          
+            GoSaveExit(evt) {
+                evt.preventDefault;
+                this.$router.push('/dashboard');
+                
+                
             },
-        },
-        filters: {
-            moment: function (date) {
-                return moment(date).format('MMM , DD YYYY');
-            }
-        },
-        beforeDestroy() {
-            if (this.resizeCb) {
-                window.removeEventListener('resize', this.resizeCb)
-                this.resizeCb = null
-            }
-            //const userId = '123'
-            //router.push({ name: 'user', params: { userId } }) // -> /user/123
-            //router.push({ path: `/user/${userId}` }) // -> /user/123
-            //// This will NOT work
-            //router.push({ path: '/user', params: { userId } }) // -> /user
-            //    // literal string path
-            //    router.push('home')
+            AssessmentSubmitToScore(evt) {
+                evt.preventDefault;
+                this.$router.push({ name: 'assessment', params: { sessionid: this.SessionID, status: 'submit' } })
+            },
+            GoQuestionBack() {
+                if (this.currentIndex == 0) {
+                    return;
+                }
+                
+                if (this.currentIndex == 3 && this.selectedGroupIdx==2) {
+                    this.currentIndex  = 1
+                    return;
+                }
+                if (this.currentIndex == 5 && this.selectedGroupIdx == 1) {
+                    this.currentIndex = 3
+                    return;
+                }
+                this.currentIndex--;
+                let currentQ = this.currentGroupQuestions[this.currentIndex];
+                this.CurrentQuestion = currentQ;
+                if (currentQ.isUIVisible == false) {
+                    this.GoQuestionBack();
+                    return 
+                } 
+            } ,
+            GoQuestionNext() { 
+                this.IsToSkipQ = false; 
+                if (this.currentIndex == (this.groupsCounts[this.selectedGroupIdx - 1] - 1)) {
+                    if (this.selectedGroupIdx >= (this.groupsCounts.length)) {
+                        this.$router.push('/assessment/' + this.SessionID + '/submit');
+                        return;
+                    }
+                    this.completedGroups.push(this.selectedGroupIdx); 
+                    let nextgroup = this.selectedGroupIdx + 1;
+                    var lcompletedGroups = JSON.parse(localStorage.getItem(this.storagefilename) || '[]');
+                    lcompletedGroups.push(nextgroup); 
+                    localStorage.setItem(this.storagefilename, JSON.stringify(lcompletedGroups)); 
+                   
+                    this.SelectGroup(nextgroup); 
+                    return;
+                }
+                console.log(this.currentGroupQuestions[this.currentIndex + 1].checkedNames);
+                let selOptions = this.currentGroupQuestions[this.currentIndex + 1].options.filter(function (el) {
+                    return el.isSelected == true;
+                  
+                });
+                console.log(selOptions);
+                this.CheckLinkedQuestion(); 
+                if (this.IsToSkipQ == true) { 
+                    this.currentIndex = this.currentIndex + 1;
+                    this.GoQuestionNext();
+                    return;
+                } 
+                this.currentIndex++;
+                let currentQ = this.currentGroupQuestions[this.currentIndex];
+              
+                //console.log(currentQ.options);
+                //if (currentQ.questionID == 'C4_1_D4_V1') {
+                //    alert('hi');
+                //    this.stacked = true;
+                //}
+            },
+            SelectGroup(i) {
+                if (i > this.groupsCounts.length) {
+                    i = this.groupsCounts.length;
+                }
+                this.selectedGroupIdx = i;
+                var filteredgroup = this.questions.filter(function (el) {
+                    return el.categoryID == 'C' + i;
+                });
+                this.currentGroupQuestions = [];
+                this.currentGroupQuestions = filteredgroup;
+                this.currentGroupQuestionsCount = this.currentGroupQuestions.length;
+                this.currentIndex = 0;//filteredgroup[0].rowID - 1;
 
-            //    // object
-            //    router.push({ path: 'home' })
-
-            //    // named route
-            //    router.push({ name: 'user', params: { userId: '123' } })
-
-            //    // with query, resulting in /register?plan=private
-            //    router.push({ path: 'register', query: { plan: 'private' } })
-        }
-
-
-    }
+                var parsed = Number.parseInt(this.groupsCounts[this.selectedGroupIdx - 1], 10);
+                if (Number.isNaN(parsed)) {
+                    return 0;
+                }
+                this.stepsMax = this.groupsCounts.length;
+            },
+            clearLoginError() {
+                this.ErrorMsg="";
+                // this.$store.dispatch('clearLoginError')
+                this.$store.dispatch('alert/clear');
+            },
+        } 
+    });
 </script>
+<style  >
 
-
-<style>
-    .popBox {
-        top: 40px;
-        left: 10%;
-        border: solid thin #000;
-        background-color: #fff; 
-        z-index: 9999;
-        position: fixed;
-        
-    }
-    .closeWindow {
-        font-size: 30px;
-        line-height: 30px;
-        font-weight: bold;
-        position: absolute;
-        text-decoration:none;
-        top: 10px;
-        right: 10px;
-    }
-    .closeWindow:hover { 
-        text-decoration: none; 
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
     }
 
-     
-    .groupheader {
-        width:100%;
-        background-color: lightgray !important;
-        font-size: large;
-        font-weight: bold;
-        height: 40px;
-        line-height: 40px;
-        padding-left: 20px;
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+        opacity: 0;
     }
 
-    table {
-        font-family: Arial !important;
-        font-size: 0.8rem !important;
+    .slide-fade-enter-active {
+        transition: all .3s ease;
     }
-    .tablescoredetails {
-        height:300px;
-        width: 100%;
-    }
-    .tablescoredetails th,td {
-        border-bottom: thin double #c5c3c3; 
-        padding-left:50px;
-    }
-    td, th {
-        height: 40px;
-        padding: 0px 5px;
-    } 
 
+    .slide-fade-leave-active {
+        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    }
+
+    .slide-fade-enter, .slide-fade-leave-to
+    /* .slide-fade-leave-active below version 2.1.8 */ {
+        transform: translateX(10px);
+        opacity: 0;
+    }
+
+    
 </style>
