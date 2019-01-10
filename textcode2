@@ -615,3 +615,78 @@
 
     
 </style>
+ALTER Procedure [dbo].[sp_AssessmentSubmitAnswer]
+( 
+@Sessionid varchar(150)  , 
+@QuestionID varchar(150)  ,
+@ValueAnswers varchar(2000)   
+)
+ as  
+begin  
+ 
+
+ 
+
+BEGIN TRANSACTION;  
+BEGIN TRY  
+declare  @SingleValue varchar(250)  
+declare  @linkedQuestion varchar(150)   
+declare  @linkedQuestionOption varchar(150) 
+if (len(@ValueAnswers)>0)
+begin
+
+		delete from [dbo].[DSCQuestionSessionsAnswers] 
+		WHERE sessionid=@Sessionid and QuestionID =@QuestionID
+
+		--update [DSCQuestionSessionsAnswers] 
+		--set Value=null ,[ValueCode]=null,  [IsSelected] =0 ,[Score]=null,[ScoreDataSet]=null 
+		--where [SessionID] =@Sessionid  and (
+		-- QuestionID in (select QuestionID from [dbo].[DSCQuestions]  WITH (NOLOCK) 
+		-- where [linkedQuestionRef]=@QuestionID )
+		--)
+
+		declare @myType varchar(20)
+		declare @RowID int 
+
+		SELECT @myType = [Type], @RowID = RowID
+		from [dbo].[DSCQuestions]  where QuestionID =@QuestionID
+
+
+		if (@myType='multi')
+		begin
+			INSERT INTO [DSCQuestionSessionsAnswers] (SessionID,QuestionID, [value],isSelected, [DateUpdated],RowID)
+			SELECT @Sessionid,@QuestionID, value , 1, GETDATE(),@RowID
+			FROM STRING_SPLIT(@ValueAnswers, ',')  
+			WHERE Ltrim(RTRIM(value)) <> ''; 
+		end else 
+		begin
+		    
+			
+			select @linkedQuestion=QuestionID,  @linkedQuestionOption=linkedQuestionOption
+			 from [dbo].[DSCQuestions]  WITH (NOLOCK)
+			where linkedQuestionRef=@QuestionID
+
+			SELECT TOP 1 @SingleValue = value FROM  STRING_SPLIT(@ValueAnswers, ',') WHERE Ltrim(RTRIM(value)) <> '';  
+			if (@linkedQuestionOption!=@SingleValue)
+			begin
+			   delete from [DSCQuestionSessionsAnswers] where QuestionID=@linkedQuestion
+			end
+		    
+		    INSERT INTO [DSCQuestionSessionsAnswers] (SessionID,QuestionID, [value],isSelected, [DateUpdated],RowID)
+			SELECT  @Sessionid,@QuestionID, @SingleValue , 1, GETDATE(),@RowID
+			 
+		end
+end                        
+END TRY  
+BEGIN CATCH  
+ 
+    IF @@TRANCOUNT > 0  
+        ROLLBACK TRANSACTION;  
+               THROW;  
+
+END CATCH;  
+
+IF @@TRANCOUNT > 0  
+    COMMIT TRANSACTION;   
+ 
+End  
